@@ -77,24 +77,30 @@ function switchLang(lang) {
 
 // Theme switching functionality
 function initTheme() {
-    // Check for saved theme preference or use system preference
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        updateThemeIcon(savedTheme);
-    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        updateThemeIcon('dark');
+    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const savedThemeOverride = localStorage.getItem('theme-override');
+
+    // Function to apply theme based on system preference
+    function applySystemTheme(e) {
+        if (!savedThemeOverride) {
+            const theme = e.matches ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+            updateThemeIcon(theme);
+        }
     }
 
-    // Add listener for system theme changes
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-        if (!localStorage.getItem('theme')) {
-            const newTheme = e.matches ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            updateThemeIcon(newTheme);
-        }
-    });
+    // Initial theme setup
+    if (savedThemeOverride) {
+        // Use saved override if it exists
+        document.documentElement.setAttribute('data-theme', savedThemeOverride);
+        updateThemeIcon(savedThemeOverride);
+    } else {
+        // Otherwise use system preference
+        applySystemTheme(darkModeMediaQuery);
+    }
+
+    // Listen for system theme changes
+    darkModeMediaQuery.addEventListener('change', applySystemTheme);
 }
 
 function toggleTheme() {
@@ -102,7 +108,7 @@ function toggleTheme() {
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
     
     document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
+    localStorage.setItem('theme-override', newTheme); // Store as override
     updateThemeIcon(newTheme);
 }
 
@@ -111,11 +117,27 @@ function updateThemeIcon(theme) {
     icon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
 }
 
+function resetToSystemTheme() {
+    localStorage.removeItem('theme-override');
+    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const theme = darkModeMediaQuery.matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+    updateThemeIcon(theme);
+}
+
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     switchLang('en');
     initTheme();
     
     // Add click event listener to theme switch button
-    document.querySelector('.theme-switch').addEventListener('click', toggleTheme);
+    const themeSwitch = document.querySelector('.theme-switch');
+    themeSwitch.addEventListener('click', (e) => {
+        if (e.shiftKey) {
+            // Shift+click to reset to system theme
+            resetToSystemTheme();
+        } else {
+            toggleTheme();
+        }
+    });
 }); 
