@@ -75,7 +75,47 @@ function switchLang(lang) {
     });
 }
 
-// Initialize with English language when the DOM is loaded
+// Theme switching functionality
+function initTheme() {
+    // Check for saved theme preference or use system preference
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        updateThemeIcon('dark');
+    }
+
+    // Add listener for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        if (!localStorage.getItem('theme')) {
+            const newTheme = e.matches ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+    });
+}
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateThemeIcon(newTheme);
+}
+
+function updateThemeIcon(theme) {
+    const icon = document.querySelector('.theme-switch .material-icons');
+    icon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
+}
+
+// Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     switchLang('en');
+    initTheme();
+    
+    // Add click event listener to theme switch button
+    document.querySelector('.theme-switch').addEventListener('click', toggleTheme);
 }); 
