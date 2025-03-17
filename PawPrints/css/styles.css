@@ -38,18 +38,36 @@ body {
 h1, h2 {
     color: var(--primary-color);
     transition: color 0.3s ease;
+    margin-top: 1.5em;
+    margin-bottom: 0.8em;
 }
+
+/* Content indentation under titles */
+h1 + p,
+h2 + p,
+h2 + ul {
+    padding-left: 1em;
+    margin-top: 0;
+}
+
 ul {
     list-style-type: none;
     padding: 0;
+    margin: 0;
 }
+
+li {
+    padding-left: 2em;
+    position: relative;
+    margin-bottom: 0.5em;
+}
+
 li::before {
     content: "\2022";
     color: var(--primary-color);
     font-weight: bold;
-    display: inline-block;
-    width: 1em;
-    margin-left: -1em;
+    position: absolute;
+    left: 1em;
     transition: color 0.3s ease;
 }
 .cta {
