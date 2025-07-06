@@ -1,3 +1,6 @@
 [submodule "FollowUp"]
 	path = FollowUp
 	url = https://github.com/Ranixculiva/FollowUp
+[submodule "Omelette"]
+	path = Omelette
+	url = https://github.com/Ranixculiva/Omelette.git
