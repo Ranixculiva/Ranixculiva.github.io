@@ -1,0 +1,86 @@
+name: Update submodules
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Which submodule to update
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - FollowUp
+          - Omelette
+  repository_dispatch:
+    types:
+      - submodule-update
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-submodules
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Resolve target submodule
+        id: target
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "name=${{ github.event.inputs.target }}" >> "$GITHUB_OUTPUT"
+          else
+            name="${{ github.event.client_payload.submodule }}"
+            if [ -z "$name" ]; then
+              name="all"
+            fi
+            echo "name=$name" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Update submodule pointers
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          target="${{ steps.target.outputs.name }}"
+
+          git submodule sync --recursive
+          git submodule update --init --recursive
+
+          if [ "$target" = "all" ]; then
+            git submodule update --remote --recursive
+          else
+            git submodule update --remote "$target"
+          fi
+
+      - name: Commit and push
+        run: |
+          target="${{ steps.target.outputs.name }}"
+
+          if git diff --quiet FollowUp Omelette .gitmodules 2>/dev/null; then
+            echo "Submodules already up to date."
+            exit 0
+          fi
+
+          git add .gitmodules FollowUp Omelette
+
+          if [ "$target" = "all" ]; then
+            followup_sha="$(git -C FollowUp rev-parse --short HEAD 2>/dev/null || echo unknown)"
+            omelette_sha="$(git -C Omelette rev-parse --short HEAD 2>/dev/null || echo unknown)"
+            msg="chore: update submodules (FollowUp ${followup_sha}, Omelette ${omelette_sha})"
+          else
+            sha="$(git -C "$target" rev-parse --short HEAD)"
+            msg="chore: update $target to $sha"
+          fi
+
+          git commit -m "$msg"
+          git push
