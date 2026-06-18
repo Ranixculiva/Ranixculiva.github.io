@@ -1,0 +1,57 @@
+---
+description: When and how to bump FollowUp JSON backup formatVersion
+globs: FollowUp/**
+alwaysApply: false
+---
+
+# FollowUp backup format version
+
+FollowUp JSON export/import is versioned so an **older installed PWA cannot import a backup from a newer app** (which could corrupt or misread data).
+
+## Source of truth
+
+- Constant: `BACKUP_FORMAT_VERSION` in `FollowUp/js/backup.js`
+- Helpers: `createBackupPayload`, `parseBackupJson`, `validateBackupVersion`
+- Import gate: `FollowUp/js/ui.js` → `handleFileImport()`
+- Export wrapper: `FollowUp/js/ui.js` → `exportToJSON()` uses `createBackupPayload()`
+
+## Exported JSON shape
+
+```json
+{
+  "formatVersion": 1,
+  "exportedAt": "ISO-8601 timestamp",
+  "customers": [ ... ]
+}
+```
+
+Legacy exports (plain `customers` array, no wrapper) are treated as `formatVersion: 0` and remain importable.
+
+## When to bump `BACKUP_FORMAT_VERSION`
+
+Increment by 1 when **any** of these change in a way that older apps cannot safely read imported data:
+
+- Customer or follow-up field names, types, or required structure
+- Meaning of stored values (e.g. enum remap, split/merge fields)
+- Export payload shape (new top-level keys, moving `customers` elsewhere)
+- IndexedDB schema changes that affect what gets exported/imported
+
+Do **not** bump for UI-only, CSS, PDF/report, or service-worker cache-only changes.
+
+## Bump checklist
+
+1. Increment `BACKUP_FORMAT_VERSION` in `FollowUp/js/backup.js`
+2. Update `parseBackupJson()` if import must accept multiple versions or migrate old data
+3. Update `createBackupPayload()` if the export envelope changes
+4. Bump `CACHE_NAME` in `FollowUp/sw.js` (e.g. `customer-app-v7` → `v8`) so clients fetch the new scripts
+5. Add `FollowUp/js/backup.js` to `ASSETS` in `sw.js` if not already listed
+
+## Import behavior (do not change without reason)
+
+| Backup `formatVersion` | App version | Result |
+|------------------------|-------------|--------|
+| `> BACKUP_FORMAT_VERSION` | current | Block import; user must update PWA |
+| `<= BACKUP_FORMAT_VERSION` | current | Allow import |
+| `0` (legacy array) | current | Allow import |
+
+User-facing block message is in `validateBackupVersion()` — keep it in Traditional Chinese.
