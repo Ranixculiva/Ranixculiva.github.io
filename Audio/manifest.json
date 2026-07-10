@@ -2,12 +2,26 @@
   "audio": [],
   "transcripts": [
     {
-      "name": "Shop_live_10_July_2026.txt",
+      "name": "MarketAmerica/Shop_live_10_July_2026/Shop_live_10_July_2026_corrected_zh-Hant.txt",
+      "size": 25021,
+      "sizeLabel": "24.4 KB",
+      "modified": 1783675901118.8813,
+      "modifiedLabel": "10 Jul 2026"
+    },
+    {
+      "name": "MarketAmerica/Shop_live_10_July_2026/Shop_live_10_July_2026_corrected.txt",
+      "size": 30313,
+      "sizeLabel": "29.6 KB",
+      "modified": 1783674442496.4788,
+      "modifiedLabel": "10 Jul 2026"
+    },
+    {
+      "name": "MarketAmerica/Shop_live_10_July_2026/Shop_live_10_July_2026_original.txt",
       "size": 30148,
       "sizeLabel": "29.4 KB",
       "modified": 1783673281417.6992,
       "modifiedLabel": "10 Jul 2026"
     }
   ],
-  "generatedAt": "2026-07-10T08:56:46.141Z"
+  "generatedAt": "2026-07-10T09:32:15.519Z"
 }
