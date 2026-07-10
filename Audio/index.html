@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audio Library</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --border: #2d3a4f;
+      --text: #e7ecf3;
+      --muted: #8b9cb3;
+      --accent: #5b9fd4;
+      --accent-hover: #7ab8e8;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f4f6f9;
+        --surface: #fff;
+        --border: #d8dee9;
+        --text: #1a2332;
+        --muted: #5c6b7f;
+        --accent: #2563eb;
+        --accent-hover: #1d4ed8;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    .wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 3rem;
+    }
+    h1 { margin: 0 0 0.35rem; font-size: 1.75rem; }
+    .lead { color: var(--muted); margin: 0 0 2rem; }
+    h2 {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin: 0 0 1rem;
+    }
+    ul { list-style: none; padding: 0; margin: 0 0 2.5rem; display: grid; gap: 1rem; }
+    .file-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.15rem;
+    }
+    .file-info { margin-bottom: 0.75rem; }
+    .file-info strong { display: block; word-break: break-all; }
+    .meta { font-size: 0.85rem; color: var(--muted); }
+    audio { width: 100%; margin-bottom: 0.5rem; }
+    .download, .view {
+      display: inline-block;
+      font-size: 0.875rem;
+      color: var(--accent);
+      text-decoration: none;
+      margin-right: 1rem;
+    }
+    .download:hover, .view:hover { color: var(--accent-hover); text-decoration: underline; }
+    .empty { color: var(--muted); }
+    .back { margin-top: 2rem; font-size: 0.9rem; }
+    .back a { color: var(--accent); }
+    footer { margin-top: 2rem; font-size: 0.8rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Audio Library</h1>
+    <p class="lead">Files in this folder are served over HTTPS on GitHub Pages.</p>
+
+    <h2>Audio</h2>
+    <ul><p class="empty">No audio files yet. Add .mp3, .wav, .ogg, or .m4a files to this folder, then run <code>node Audio/scripts/build-index.js</code>.</p></ul>
+
+    <h2>Transcripts</h2><ul>
+        <li class="file-card" data-type="transcript">
+          <div class="file-info">
+            <strong>Shop_live_10_July_2026.txt</strong>
+            <span class="meta">29.4 KB · 10 Jul 2026</span>
+          </div>
+          <a class="view" href="Shop_live_10_July_2026.txt" target="_blank" rel="noopener">View transcript</a>
+          <a class="download" href="Shop_live_10_July_2026.txt" download>Download</a>
+        </li></ul>
+
+    <p class="back"><a href="../">← Back to projects</a></p>
+    <footer>Updated 2026-07-10T08:56:46.141Z</footer>
+  </div>
+</body>
+</html>
