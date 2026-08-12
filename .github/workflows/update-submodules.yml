@@ -12,6 +12,7 @@ on:
           - all
           - FollowUp
           - Omelette
+          - resume-au
   repository_dispatch:
     types:
       - submodule-update
@@ -66,17 +67,18 @@ jobs:
         run: |
           target="${{ steps.target.outputs.name }}"
 
-          if git diff --quiet FollowUp Omelette .gitmodules 2>/dev/null; then
+          if git diff --quiet FollowUp Omelette resume-au .gitmodules 2>/dev/null; then
             echo "Submodules already up to date."
             exit 0
           fi
 
-          git add .gitmodules FollowUp Omelette
+          git add .gitmodules FollowUp Omelette resume-au
 
           if [ "$target" = "all" ]; then
             followup_sha="$(git -C FollowUp rev-parse --short HEAD 2>/dev/null || echo unknown)"
             omelette_sha="$(git -C Omelette rev-parse --short HEAD 2>/dev/null || echo unknown)"
-            msg="chore: update submodules (FollowUp ${followup_sha}, Omelette ${omelette_sha})"
+            resume_sha="$(git -C resume-au rev-parse --short HEAD 2>/dev/null || echo unknown)"
+            msg="chore: update submodules (FollowUp ${followup_sha}, Omelette ${omelette_sha}, resume-au ${resume_sha})"
           else
             sha="$(git -C "$target" rev-parse --short HEAD)"
             msg="chore: update $target to $sha"

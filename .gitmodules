@@ -4,3 +4,6 @@
 [submodule "Omelette"]
 	path = Omelette
 	url = https://github.com/Ranixculiva/Omelette.git
+[submodule "resume-au"]
+	path = resume-au
+	url = https://github.com/Ranixculiva/resume.git
